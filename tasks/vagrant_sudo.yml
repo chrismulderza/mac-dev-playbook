@@ -1,0 +1,11 @@
+---
+# Sudoers configuration (enables more convenient Vagrant usage).
+- name: Copy sudoers configuration into place.
+  copy:
+    src: files/etc/vagrant_sudoers
+    dest: /etc/sudoers.d
+    mode: 0440
+    validate: 'visudo -cf %s'
+  become: yes
+  when: configure_vagrant_sudoers
+
