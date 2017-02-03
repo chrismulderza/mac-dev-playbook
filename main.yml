@@ -10,14 +10,15 @@
       with_fileglob:
         - ../config.yml
 
-  roles:
-#    - ansible-setup
-#    - homebrew
-#    - { role: dotfiles-bash, when: configure_dotfiles_bash }
-    - { role: dotfiles-vim, when: configure_dotfiles_vim }
 
-#  tasks:
-#    - include: tasks/vagrant_sudo.yml
-#      when: configure_vagrant_sudoers
-#    - include: tasks/preferences.yml
-#      when: configure_prefs
+  tasks:
+
+
+    - include: tasks/setup-ansible.yml
+    - include: tasks/setup-homebrew.yml
+      when: homebrew_setup
+    - include: tasks/setup-repo.yml
+    - include: tasks/setup-dotfiles.yml
+      when: dotfiles_setup
+    - include: tasks/setup-vagrant.yml
+      when: configure_vagrant

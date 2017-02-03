@@ -1,37 +1,31 @@
 ---
-ansible_downloads: ~/.ansible-downloads/
-dotfiles_home: "~"
+# Basic Configuration
+ansible_downloads: "~/.ansible-downloads/"
+dotfiles_repo: "https://github.com/chrismulderza/dotfiles.git"
+dotfiles_repo_destination: "~/code/github/dotfiles"
+dotfiles_repo_accept_hostkey: yes
 
-# Homebrew options
+## Begin Homebrew Options
+homebrew_setup: no
+homebrew_prefix: /usr/local
+homebrew_install_path: "{{ homebrew_prefix }}/Homebrew"
+homebrew_brew_bin_path: /usr/local/bin
+homebrew_use_brewfile: true
+homebrew_brewfile_dir: '~'
+
+# Should we upgrade first
 homebrew_upgrade_all_packages: no
 
-configure_vagrant_sudoers: yes
-configure_prefs: yes
-configure_osx: yes
+# Homebre taps to configure
+homebrew_taps:
+  - homebrew/core
+  - caskroom/cask
+  - homebrew/binary
+  - homebrew/dupes
+  - homebrew/fonts
+  - homebrew/versions
 
-# Dotfiles options
-
-# Bash Options
-configure_dotfiles_bash: yes
-dotfiles_repo: "https://github.com/chrismulderza/dotfiles.git"
-dotfiles_repo_accept_hostkey: yes
-dotfiles_repo_local_destination: ~/code/github/dotfiles
-
-dotfiles_bash_files:
-#  - .bash_profile
-#  - .gitconfig
-  - tmux.conf
-  - tmux-osx.conf
-#  - .inputrc
-#  - .osx
-#  - .vimrc
-
-# Vim Options
-configure_dotfiles_vim: yes
-dotfiles_vim_files:
-  - vimrc
-
-
+# Homebrew packages to install
 homebrew_installed_packages:
   - autoconf
   - bash
@@ -43,6 +37,7 @@ homebrew_installed_packages:
   - doxygen
   - findutils
   - gettext
+  - git
   - gpg
   - gradle
   - groovy
@@ -61,14 +56,8 @@ homebrew_installed_packages:
   - vpnc
   - wget
 
-homebrew_taps:
-  - homebrew/core
-  - caskroom/cask
-  - homebrew/binary
-  - homebrew/dupes
-  - homebrew/fonts
-  - homebrew/versions
-
+# Homebrew Cask options
+# Where to install Homebrew Cask apps
 homebrew_cask_appdir: /Applications
 homebrew_cask_apps:
   - docker
@@ -81,4 +70,66 @@ homebrew_cask_apps:
   - vagrant
   - virtualbox
   - vlc
+## End Homebrew Options
 
+## Main dotfiles configuration
+
+
+dotfiles_setup: yes
+
+dotfiles_srcdir: "{{dotfiles_repo_destination}}"
+dotfiles_dstdir: "{{ lookup('env','HOME') }}"
+
+
+dotfiles_link_groups:
+  - bash
+  - bin_dir
+  - git
+  - local
+  - tmux
+  - misc
+
+dotfiles_links:
+  - configtype: bash
+    links:
+      - src: bash/bash_profile
+        dest: .bash_profile
+      - src: bash/bashrc
+        dest: .bashrc
+      - src: bash/bash_completion.d
+        dest: .bash_completion.d
+      - src: bash/bashrc.d
+        dest: .bashrc.d
+  - configtype: bin_dir
+    links:
+      - src: bin
+        dest: bin
+  - configtype: misc
+    links:
+      - src: config/mc/ini
+        dest: .config/mc/ini
+      - src: local/share/mc/skins
+        dest: .local/share/mc/skins
+
+
+## End Bash dotfiles options
+
+## Begin Vagrant Options
+configure_vagrant: no
+
+## End Vagrant 
+
+configure_prefs: yes
+configure_osx: yes
+
+# Dotfiles options
+
+# Bash Options
+
+# Vim Options
+configure_dotfiles_vim: yes
+dotfiles_vim_files:
+  - vimrc
+
+# TODO:
+# http://sdkman.io/usage.html

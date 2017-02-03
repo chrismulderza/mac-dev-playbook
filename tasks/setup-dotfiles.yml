@@ -1,0 +1,45 @@
+---
+- name: Stat files in link list.
+  stat: path={{ dotfiles_dstdir }}/{{ item[1].dest }}
+  with_subelements:
+    - "{{dotfiles_links}}"
+    - links
+  #when: item[0].configtype == 'bash_files' or item[0].configtype == 'bash_dirs'
+  when: dotfiles_link_groups
+  register: destinations
+
+- name: Print destinations results
+  debug:
+    msg: "Path={{item.stat.path}} Exists={{ item.stat.exists }}"
+    verbosity: 2
+  check_mode: yes
+  with_items: "{{ destinations.results }}"
+  when: item.stat.exists is defined and item.stat.path is defined
+
+- name: Print destinations that are symlinks
+  debug:
+    msg: "Path={{item.stat.path}} isSymlink={{ item.stat.islnk }}"
+    verbosity: 2
+  check_mode: yes
+  with_items: "{{ destinations.results }}"
+  when: item.stat.exists is defined and item.stat.islnk == True
+
+- name: Remove existing dotfiles file if a replacement is being linked.
+  file:
+    path: item.stat.path
+    state: absent
+  with_items: "{{ destinations.results }}"
+  when: item.stat.exists is defined and item.stat.path is defined
+
+- name: Link dotfiles into home folder.
+  file:
+    src: "{{ dotfiles_srcdir }}/{{ item[1].src }}"
+    dest: "{{ dotfiles_dstdir }}/{{ item[1].dest }}"
+    force: yes
+    state: link
+  become: no
+  with_subelements:
+    - "{{dotfiles_links}}"
+    - links
+  #when: item[0].configtype == 'bash_files' or item[0].configtype == 'bash_dirs'
+  when: dotfiles_link_groups
