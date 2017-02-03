@@ -49,6 +49,7 @@ homebrew_installed_packages:
   - ssh-copy-id
   - subversion
   - pv
+  - reattach-to-user-namespace
   - tmux
   - tree
   - vim
@@ -85,7 +86,6 @@ dotfiles_link_groups:
   - bash
   - bin_dir
   - git
-  - local
   - tmux
   - misc
 
@@ -110,9 +110,15 @@ dotfiles_links:
         dest: .config/mc/ini
       - src: local/share/mc/skins
         dest: .local/share/mc/skins
+  - configtype: tmux
+    links:
+      - src: tmux/tmux.conf
+        dest: .tmux.conf
+      - src: tmux/tmux-osx.conf
+        dest: .tmux-osx.conf
 
 
-## End Bash dotfiles options
+## End dotfiles options
 
 ## Begin Vagrant Options
 configure_vagrant: no
